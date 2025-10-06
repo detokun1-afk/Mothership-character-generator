@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Generador de Personajes - Mothership</title>
+  <style>
+    body {
+      background-color: #000; /* fondo negro puro */
+      color: #00ff66; /* verde fosforescente */
+      font-family: "Courier New", monospace;
+      padding: 20px;
+      text-align: center;
+      text-shadow: 0 0 5px #00ff66; /* leve brillo tipo pantalla */
+    }
+    h1 {
+      color: #00ff66;
+      margin-bottom: 10px;
+      text-shadow: 0 0 8px #00ff66;
+    }
+    button {
+      margin: 8px;
+      padding: 10px 20px;
+      border: 1px solid #00ff66;
+      border-radius: 6px;
+      background-color: #001a00; /* tono muy oscuro de verde */
+      color: #00ff66;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      text-shadow: 0 0 3px #00ff66;
+    }
+    button:hover {
+      background-color: #002b00;
+      box-shadow: 0 0 8px #00ff66;
+    }
+    .stat {
+      margin: 10px 0;
+      font-size: 1.2em;
+    }
+    #stats {
+      max-width: 500px;
+      margin: 0 auto;
+      background: #001100;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00ff66 inset;
+    }
+  </style>
+</head>
+<body>
+  <h1>Generador de Personajes - Mothership</h1>
+
+  <button onclick="generarPersonaje()">Generar Personaje</button>
+  <button onclick="limpiarPersonaje()">Limpiar</button>
+
+  <div id="stats"></div>
+
+  <script>
+    function tirarDado(lados) {
+      return Math.floor(Math.random() * lados) + 1;
+    }
+
+    function tirarVariosDados(cantidad, lados) {
+      let total = 0;
+      for (let i = 0; i < cantidad; i++) {
+        total += tirarDado(lados);
+      }
+      return total;
+    }
+
+    function generarPersonaje() {
+      const personaje = {
+        fuerza: tirarVariosDados(2, 10) + 25,
+        velocidad: tirarVariosDados(2, 10) + 25,
+        intelecto: tirarVariosDados(2, 10) + 25,
+        combate: tirarVariosDados(2, 10) + 25,
+        cordura: tirarVariosDados(2, 10) + 10,
+        miedo: tirarVariosDados(2, 10) + 10,
+        cuerpo: tirarVariosDados(2, 10) + 10,
+        puntosGolpe: tirarDado(10) + 10,
+        equipo: tirarDado(100),
+        parche: tirarDado(100),
+        baratija: tirarDado(100)
+      };
+
+      localStorage.setItem("personaje", JSON.stringify(personaje));
+      mostrarPersonaje(personaje);
+    }
+
+    function mostrarPersonaje(p) {
+      const statsDiv = document.getElementById("stats");
+      statsDiv.innerHTML = `
+        <div class="stat"><strong>Fuerza:</strong> ${p.fuerza}</div>
+        <div class="stat"><strong>Velocidad:</strong> ${p.velocidad}</div>
+        <div class="stat"><strong>Intelecto:</strong> ${p.intelecto}</div>
+        <div class="stat"><strong>Combate:</strong> ${p.combate}</div>
+        <hr>
+        <div class="stat"><strong>Cordura:</strong> ${p.cordura}</div>
+        <div class="stat"><strong>Miedo:</strong> ${p.miedo}</div>
+        <div class="stat"><strong>Cuerpo:</strong> ${p.cuerpo}</div>
+        <hr>
+        <div class="stat"><strong>Puntos de Golpe:</strong> ${p.puntosGolpe}</div>
+        <hr>
+        <div class="stat"><strong>Equipo (d100):</strong> ${p.equipo}</div>
+        <div class="stat"><strong>Parche (d100):</strong> ${p.parche}</div>
+        <div class="stat"><strong>Baratija (d100):</strong> ${p.baratija}</div>
+      `;
+    }
+
+    function limpiarPersonaje() {
+      localStorage.removeItem("personaje");
+      document.getElementById("stats").innerHTML = "";
+    }
+
+    window.onload = () => {
+      const guardado = localStorage.getItem("personaje");
+      if (guardado) mostrarPersonaje(JSON.parse(guardado));
+    };
+  </script>
+</body>
+</html>
